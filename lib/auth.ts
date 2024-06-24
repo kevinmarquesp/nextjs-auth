@@ -15,7 +15,7 @@ export const authConfig: NextAuthOptions = {
 
 			async authorize(credentials, _request) {
 				if (!credentials || !credentials.password || !credentials.email || !credentials.password)
-					return null
+					throw new Error("All fields are required.")
 
 				let dbUser: any = await prisma.user.findUnique({
 					where: { email: credentials.email },
@@ -30,7 +30,7 @@ export const authConfig: NextAuthOptions = {
 						}
 					})
 				} else {
-					return null
+					throw new Error("User already exists.")
 				}
 
 				const user = {

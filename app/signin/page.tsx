@@ -1,29 +1,42 @@
 'use client'
 
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export default function SignIn() {
+  const [error, setError] = useState<string | null>(null)
+
   return (
     <main className='w-screen h-screen p-8 bg-black'>
-      <form action={async (data) => {
-        const signinResponse = await signIn("credentials", {
-          email: data.get("email"),
-          username: data.get("username"),
-          password: data.get("password"),
-        })
-      }} className='max-w-sm'>
+      <form className='max-w-sm' onSubmit={async (event) => {
+        event.preventDefault()
 
+        const data = new FormData(event.target as HTMLFormElement)
+
+        const signinResponse = await signIn("credentials", {
+          redirect: false,
+          email: data.get("email") as string,
+          username: data.get("username") as string,
+          password: data.get("password") as string,
+        })
+
+        if (signinResponse?.error)
+          setError(signinResponse.error)
+      }}>
         <div>
           <FormInput required type='email' placeholder='Email' name='email' />
           <FormInput required type='text' placeholder='Username' name='username' />
           <FormInput required type='password' placeholder='Password' name='password' />
         </div>
-
         <button type='submit' className='inline-block w-full px-8 py-4 mb-3 text-center text-white bg-green-700 hover:bg-green-800 transition-all ease-linear font-bold rounded-md'>
           Register
         </button>
-
       </form>
+      {error ?
+        <span className="max-w-sm inline-block w-full px-8 py-4 mb-3 text-center text-white bg-red-700 rounded-md">
+          {error}
+        </span> : <></>
+      }
     </main >
   );
 }
