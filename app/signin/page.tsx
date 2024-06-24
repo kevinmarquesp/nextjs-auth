@@ -1,10 +1,12 @@
 'use client'
 
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignIn() {
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   return (
     <main className='w-screen h-screen p-8 bg-black'>
@@ -22,6 +24,8 @@ export default function SignIn() {
 
         if (signinResponse?.error)
           setError(signinResponse.error)
+        else
+          router.push("/")
       }}>
         <div>
           <FormInput required type='email' placeholder='Email' name='email' />
