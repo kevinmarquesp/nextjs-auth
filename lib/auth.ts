@@ -5,7 +5,7 @@ import prisma from '@/prisma/client';
 export const authConfig: NextAuthOptions = {
 	providers: [
 		CredentialsProvider({
-			name: "Sign in with...",
+			name: "Email",
 
 			credentials: {
 				email: { label: "Email", type: "email", placeholder: "fulanodetal@email.com" },
@@ -17,11 +17,11 @@ export const authConfig: NextAuthOptions = {
 				if (!credentials || !credentials.password || !credentials.email || !credentials.password)
 					return null
 
-				let dbUser: any = prisma.user.findUnique({
+				let dbUser: any = await prisma.user.findUnique({
 					where: { email: credentials.email },
 				})
 
-				if (!dbUser)
+				if (!dbUser) {
 					dbUser = await prisma.user.create({
 						data: {
 							email: credentials.email,
@@ -29,8 +29,9 @@ export const authConfig: NextAuthOptions = {
 							password: credentials.password,
 						}
 					})
-				else
+				} else {
 					return null
+				}
 
 				const user = {
 					id: dbUser.id,
