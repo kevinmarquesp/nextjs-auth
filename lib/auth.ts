@@ -3,9 +3,11 @@ import { NextAuthOptions } from 'next-auth';
 import prisma from '@/prisma/client';
 
 export const authConfig: NextAuthOptions = {
+	secret: process.env.NEXTAUTH_SECRET,
+
 	providers: [
 		CredentialsProvider({
-			name: "Email",
+			name: "credentials",
 
 			credentials: {
 				email: { label: "Email", type: "email", placeholder: "fulanodetal@email.com" },
@@ -41,10 +43,14 @@ export const authConfig: NextAuthOptions = {
 					updatedAt: dbUser.updatedAt,
 				};
 
-				console.log(user)
-
 				return user
 			},
 		}),
 	],
+
+	session: {
+		strategy: "jwt",
+		maxAge: 10,
+		updateAge: 5,
+	},
 }

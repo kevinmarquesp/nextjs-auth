@@ -36,11 +36,10 @@ export default function SignIn() {
           Register
         </button>
       </form>
-      {error ?
+      {error &&
         <span className="max-w-sm inline-block w-full px-8 py-4 mb-3 text-center text-white bg-red-700 rounded-md">
           {error}
-        </span> : <></>
-      }
+        </span>}
     </main >
   );
 }
